@@ -1,0 +1,1 @@
+cargo:rustc-env=UEFI_BOOTLOADER_PATH=/home/chawinl/PongGame Keep Update/Pong/target/debug/build/bootloader-f82c74bffd835aa0/out/bin/bootloader-x86_64-uefi.efi

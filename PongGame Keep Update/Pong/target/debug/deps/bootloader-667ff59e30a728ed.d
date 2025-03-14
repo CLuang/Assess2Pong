@@ -1,0 +1,14 @@
+/home/chawinl/PongGame Keep Update/Pong/target/debug/deps/libbootloader-667ff59e30a728ed.rmeta: /home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/lib.rs /home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/gpt.rs /home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/uefi/mod.rs /home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/fat.rs /home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/file_data_source.rs /home/chawinl/PongGame\ Keep\ Update/Pong/target/debug/build/bootloader-f82c74bffd835aa0/out/bin/bootloader-x86_64-uefi.efi
+
+/home/chawinl/PongGame Keep Update/Pong/target/debug/deps/libbootloader-667ff59e30a728ed.rlib: /home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/lib.rs /home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/gpt.rs /home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/uefi/mod.rs /home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/fat.rs /home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/file_data_source.rs /home/chawinl/PongGame\ Keep\ Update/Pong/target/debug/build/bootloader-f82c74bffd835aa0/out/bin/bootloader-x86_64-uefi.efi
+
+/home/chawinl/PongGame Keep Update/Pong/target/debug/deps/bootloader-667ff59e30a728ed.d: /home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/lib.rs /home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/gpt.rs /home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/uefi/mod.rs /home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/fat.rs /home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/file_data_source.rs /home/chawinl/PongGame\ Keep\ Update/Pong/target/debug/build/bootloader-f82c74bffd835aa0/out/bin/bootloader-x86_64-uefi.efi
+
+/home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/lib.rs:
+/home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/gpt.rs:
+/home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/uefi/mod.rs:
+/home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/fat.rs:
+/home/chawinl/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bootloader-0.11.9/src/file_data_source.rs:
+/home/chawinl/PongGame\ Keep\ Update/Pong/target/debug/build/bootloader-f82c74bffd835aa0/out/bin/bootloader-x86_64-uefi.efi:
+
+# env-dep:UEFI_BOOTLOADER_PATH=/home/chawinl/PongGame Keep Update/Pong/target/debug/build/bootloader-f82c74bffd835aa0/out/bin/bootloader-x86_64-uefi.efi
