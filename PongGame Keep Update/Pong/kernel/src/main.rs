@@ -123,6 +123,13 @@ fn kernel_main(boot_info: &'static mut BootInfo) -> ! {
         .start(lapic_ptr)
 }
 
+fn start() {
+    screenwriter().draw_pong_game();
+    screenwriter().draw_mid_line();
+    draw_score(0, screenwriter().width() / 4, 10, 30); // Left player
+    draw_score(0, 3 * screenwriter().width() / 4, 10, 30); // Right player
+}
+
 fn draw_score(score: i32, x: usize, y: usize, size: usize) {
     match score {
         0 => screenwriter().draw_zero(x, y, size),
@@ -133,27 +140,31 @@ fn draw_score(score: i32, x: usize, y: usize, size: usize) {
     }
 }
 
-fn start() {
-    screenwriter().draw_pong_game();
-    screenwriter().draw_mid_line();
-    draw_score(0, screenwriter().width() / 4, 10, 30); // Left player
-    draw_score(0, 3 * screenwriter().width() / 4, 10, 30); // Right player
-}
-
 fn tick() {
     unsafe {
         if GAME_STATE.load(Ordering::Relaxed) == 1 {
             // Game has ended, display win message
             let message = if LEFT_SCORE.load(Ordering::Relaxed) >= 3 {
-                "Left Player Wins! Press 'r' to restart"
+            "Left Player Wins! Press 'r' to restart"
             } else {
-                "Right Player Wins! Press 'r' to restart"
+            "Right Player Wins! Press 'r' to restart"
             };
+
             let char_width = 20;
             let text_width = message.len() * char_width;
-            let start_x = (screenwriter().width() / 2) - (text_width / 2); // Center horizontally
-            let start_y = screenwriter().height() / 2; // Center vertically
+
+            if LEFT_SCORE.load(Ordering::Relaxed) >= 3 {
+            // Display message on the left side
+            let start_x = (screenwriter().width() / 2) - (text_width / 2);
+            let start_y = screenwriter().height() / 2;
             screenwriter().set_position(start_x, start_y);
+            } else {
+            // Display message on the right side
+            let start_x = (screenwriter().width()) - (text_width / 2);
+            let start_y = screenwriter().height() / 2;
+            screenwriter().set_position(start_x, start_y);
+        }
+
             write!(screenwriter(), "{}", message).unwrap();
             return;
         }
@@ -169,7 +180,7 @@ fn tick() {
         let left_score_x = screenwriter().width() / 4;
         let right_score_x = 3 * screenwriter().width() / 4;
         let score_y = 10;
-        let score_size = 50;
+        let score_size = 40;
 
         // Check for scoring conditions
         if new_ball_x < 0 {
@@ -179,10 +190,10 @@ fn tick() {
             draw_score(right_score, right_score_x, score_y, score_size);
             BALL_X = screenwriter().width() / 2;
             BALL_Y = screenwriter().height() / 2;
-            BALL_SPEED_X = 3;
-            BALL_SPEED_Y = 3;
+            BALL_SPEED_X = BALL_SPEED_X.abs() + 1; // Increase speed and launch towards the right player
+            BALL_SPEED_Y = 3; // Reset vertical speed
             if right_score >= 3 {
-                GAME_STATE.store(1, Ordering::Relaxed);
+            GAME_STATE.store(1, Ordering::Relaxed);
             }
         } else if new_ball_x + BALL_SIZE as isize > screenwriter().width() as isize {
             // Left player scores
@@ -191,11 +202,12 @@ fn tick() {
             draw_score(left_score, left_score_x, score_y, score_size);
             BALL_X = screenwriter().width() / 2;
             BALL_Y = screenwriter().height() / 2;
-            BALL_SPEED_X = -3;
-            BALL_SPEED_Y = -3;
+            BALL_SPEED_X = -(BALL_SPEED_X.abs() + 1); // Increase speed and launch towards the left player
+            BALL_SPEED_Y = -3; // Reset vertical speed
             if left_score >= 3 {
-                GAME_STATE.store(1, Ordering::Relaxed);
+            GAME_STATE.store(1, Ordering::Relaxed);
             }
+        
         } else {
             BALL_X = new_ball_x as usize;
 
