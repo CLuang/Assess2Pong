@@ -31,10 +31,10 @@ pub static mut PADDLE_RIGHT: usize = 100;
 pub const PADDLE_WIDTH: usize = 10;
 pub const PADDLE_HEIGHT: usize = 100;
 pub static mut BALL_X: usize = 200;
-pub static mut BALL_Y: usize = 150;
-pub const BALL_SIZE: usize = 10;
 pub static mut BALL_SPEED_X: isize = 3;
+pub static mut BALL_Y: usize = 150;
 pub static mut BALL_SPEED_Y: isize = 3;
+pub const BALL_SIZE: usize = 10;
 static LEFT_SCORE: AtomicI32 = AtomicI32::new(0);
 static RIGHT_SCORE: AtomicI32 = AtomicI32::new(0);
 static GAME_STATE: AtomicI32 = AtomicI32::new(0); // 0: ongoing, 1: ended
@@ -93,7 +93,6 @@ fn kernel_main(boot_info: &'static mut BootInfo) -> ! {
     )
     .unwrap();
 
-    //read CR3 for current page table
     let cr3 = Cr3::read().0.start_address().as_u64();
     writeln!(serial(), "CR3 read: {:#x}", cr3).unwrap();
 
@@ -154,12 +153,10 @@ fn tick() {
             let text_width = message.len() * char_width;
 
             if LEFT_SCORE.load(Ordering::Relaxed) >= 3 {
-            // Display message on the left side
             let start_x = (screenwriter().width() / 2) - (text_width / 2);
             let start_y = screenwriter().height() / 2;
             screenwriter().set_position(start_x, start_y);
             } else {
-            // Display message on the right side
             let start_x = (screenwriter().width()) - (text_width / 2);
             let start_y = screenwriter().height() / 2;
             screenwriter().set_position(start_x, start_y);
@@ -169,41 +166,37 @@ fn tick() {
             return;
         }
 
-        // Clear the ball's old position
+    
         screenwriter().clear_ball(BALL_X, BALL_Y, BALL_SIZE);
 
-        // Calculate new ball position
         let new_ball_x = (BALL_X as isize) + BALL_SPEED_X;
         let new_ball_y = (BALL_Y as isize) + BALL_SPEED_Y;
 
-        // Score display positions
         let left_score_x = screenwriter().width() / 4;
         let right_score_x = 3 * screenwriter().width() / 4;
         let score_y = 10;
         let score_size = 40;
 
-        // Check for scoring conditions
         if new_ball_x < 0 {
-            // Right player scores
-            let right_score = RIGHT_SCORE.fetch_add(1, Ordering::Relaxed) + 1; // New score
+            let right_score = RIGHT_SCORE.fetch_add(1, Ordering::Relaxed) + 1;
             screenwriter().clear_score(right_score_x, score_y, score_size);
             draw_score(right_score, right_score_x, score_y, score_size);
             BALL_X = screenwriter().width() / 2;
+            BALL_SPEED_X = BALL_SPEED_X.abs() + 1;
             BALL_Y = screenwriter().height() / 2;
-            BALL_SPEED_X = BALL_SPEED_X.abs() + 1; // Increase speed and launch towards the right player
-            BALL_SPEED_Y = 3; // Reset vertical speed
+            BALL_SPEED_Y = 3;
             if right_score >= 3 {
             GAME_STATE.store(1, Ordering::Relaxed);
             }
         } else if new_ball_x + BALL_SIZE as isize > screenwriter().width() as isize {
             // Left player scores
-            let left_score = LEFT_SCORE.fetch_add(1, Ordering::Relaxed) + 1; // New score
+            let left_score = LEFT_SCORE.fetch_add(1, Ordering::Relaxed) + 1;
             screenwriter().clear_score(left_score_x, score_y, score_size);
             draw_score(left_score, left_score_x, score_y, score_size);
             BALL_X = screenwriter().width() / 2;
+            BALL_SPEED_X = -(BALL_SPEED_X.abs() + 1);
             BALL_Y = screenwriter().height() / 2;
-            BALL_SPEED_X = -(BALL_SPEED_X.abs() + 1); // Increase speed and launch towards the left player
-            BALL_SPEED_Y = -3; // Reset vertical speed
+            BALL_SPEED_Y = -3;
             if left_score >= 3 {
             GAME_STATE.store(1, Ordering::Relaxed);
             }
@@ -213,41 +206,41 @@ fn tick() {
 
             if new_ball_y < 0 {
                 BALL_Y = 0;
-                BALL_SPEED_Y = -BALL_SPEED_Y; // Bounce downward
+                BALL_SPEED_Y = -BALL_SPEED_Y;
             } else if new_ball_y + BALL_SIZE as isize > screenwriter().height() as isize {
-                BALL_Y = (screenwriter().height() - BALL_SIZE) as usize; // Clamp to bottom
-                BALL_SPEED_Y = -BALL_SPEED_Y; // Bounce upward
+                BALL_Y = (screenwriter().height() - BALL_SIZE) as usize; 
+                BALL_SPEED_Y = -BALL_SPEED_Y; 
             } else {
-                BALL_Y = new_ball_y as usize; // Normal movement within bounds
+                BALL_Y = new_ball_y as usize;
             }
 
-            // Right paddle collision
+
             if BALL_SPEED_X > 0
                 && new_ball_x + (BALL_SIZE + 15) as isize
                     >= screenwriter().width() as isize - PADDLE_WIDTH as isize
                 && new_ball_y + BALL_SIZE as isize > PADDLE_RIGHT as isize
                 && new_ball_y < (PADDLE_RIGHT + PADDLE_HEIGHT) as isize
             {
-                BALL_SPEED_X = -BALL_SPEED_X; // Bounce left
+                BALL_SPEED_X = -BALL_SPEED_X; 
             }
-            // Left paddle collision
+          
             else if BALL_SPEED_X < 0
                 && new_ball_x <= (PADDLE_WIDTH + 15) as isize
                 && new_ball_y + BALL_SIZE as isize > PADDLE_LEFT as isize
                 && new_ball_y < (PADDLE_LEFT + PADDLE_HEIGHT) as isize
             {
-                BALL_SPEED_X = -BALL_SPEED_X; // Bounce right
+                BALL_SPEED_X = -BALL_SPEED_X; 
             }
         }
 
-        // Draw the ball at the new position
+       
         screenwriter().draw_ball(BALL_X, BALL_Y, BALL_SIZE);
 
-        // Redraw game elements
+      
         screenwriter().draw_pong_game();
         screenwriter().draw_mid_line();
 
-        // Always draw the current scores
+       
         screenwriter().clear_score(left_score_x, score_y, score_size);
         draw_score(LEFT_SCORE.load(Ordering::Relaxed), left_score_x, score_y, score_size);
         screenwriter().clear_score(right_score_x, score_y, score_size);

@@ -29,7 +29,6 @@ pub fn init(buffer: &'static mut FrameBuffer) {
     *unsafe { WRITER.get_mut() } = Some(writer);
 }
 
-/// Additional vertical space between lines
 const LINE_SPACING: usize = 0;
 
 pub struct ScreenWriter {
@@ -37,8 +36,8 @@ pub struct ScreenWriter {
     info: FrameBufferInfo,
     x_pos: usize,
     y_pos: usize,
-    previous_paddle_left_pos: usize,   // Track previous position of the left paddle
-    previous_paddle_right_pos: usize,  // Track previous position of the right paddle
+    previous_paddle_left_pos: usize, 
+    previous_paddle_right_pos: usize,  
 }
 
 impl ScreenWriter {
@@ -48,8 +47,8 @@ impl ScreenWriter {
             info,
             x_pos: 0,
             y_pos: 0,
-            previous_paddle_left_pos: 0,  // Initializing previous paddle positions
-            previous_paddle_right_pos: 0, // Initializing previous paddle positions
+            previous_paddle_left_pos: 0,  
+            previous_paddle_right_pos: 0, 
         };
         logger.clear();
         logger
@@ -64,7 +63,6 @@ impl ScreenWriter {
         self.x_pos = 0;
     }
 
-    /// Erases all text on the screen.
     pub fn clear(&mut self) {
         self.x_pos = 0;
         self.y_pos = 0;
@@ -115,8 +113,6 @@ impl ScreenWriter {
             PixelFormat::Rgb => [intensity / 4, intensity, intensity / 2, 0],
             PixelFormat::Bgr => [intensity / 2, intensity, intensity / 4, 0],
             other => {
-                // set a supported (but invalid) pixel format before panicking to avoid a double
-                // panic; it might not be readable though
                 self.info.pixel_format = PixelFormat::Rgb;
                 panic!("pixel format {:?} not supported in logger", other)
             }
@@ -134,8 +130,6 @@ impl ScreenWriter {
             PixelFormat::Rgb => [r, g, b, 0],
             PixelFormat::Bgr => [b, g, r, 0],
             other => {
-                // set a supported (but invalid) pixel format before panicking to avoid a double
-                // panic; it might not be readable though
                 self.info.pixel_format = PixelFormat::Rgb;
                 panic!("pixel format {:?} not supported in logger", other)
             }
@@ -150,28 +144,25 @@ impl ScreenWriter {
     pub fn draw_zero(&mut self, x: usize, y: usize, size: usize) {
         let thickness = size / 6;
     
-        // Draw the top horizontal line
+
         for dx in 0..size {
             for t in 0..thickness {
                 screenwriter().draw_pixel(x + dx, y + t, 255, 255, 255);
             }
         }
     
-        // Draw the bottom horizontal line
         for dx in 0..size {
             for t in 0..thickness {
                 screenwriter().draw_pixel(x + dx, y + size - thickness + t + 10, 255, 255, 255);
             }
         }
     
-        // Draw the left vertical line
         for dy in 0..size + 10 {
             for t in 0..thickness {
                 screenwriter().draw_pixel(x + t, y + dy, 255, 255, 255);
             }
         }
     
-        // Draw the right vertical line
         for dy in 0..size + 10 {
             for t in 0..thickness {
                 screenwriter().draw_pixel(x + size - thickness + t, y + dy, 255, 255, 255);
@@ -192,14 +183,12 @@ impl ScreenWriter {
     pub fn draw_two(&mut self, x: usize, y: usize, size: usize) {
         let thickness = size / 6;
     
-        // Top horizontal line
         for dx in 0..size {
             for t in 0..thickness {
                 screenwriter().draw_pixel(x + dx, y + t, 255, 255, 255);
             }
         }
 
-        // Right vertical line
         let vertical_height = size / 2;
         for dy in 0..vertical_height {
             for dx in 0..thickness {
@@ -207,21 +196,18 @@ impl ScreenWriter {
             }
         }
     
-        // Middle horizontal line
         for dx in 0..size {
             for t in 0..thickness {
                 screenwriter().draw_pixel(x + dx, y + size / 2 - thickness / 2 + t, 255, 255, 255);
             }
         }
     
-        // Bottom horizontal line
         for dx in 0..size {
             for t in 0..thickness {
                 screenwriter().draw_pixel(x + dx, y + size - thickness + t +10, 255, 255, 255);
             }
         }
     
-        // Draw the bottom-left vertical line
         for dy in 0..size / 2 + 10 {
             for t in 0..thickness {
                 screenwriter().draw_pixel(x + t, y + size / 2 + dy, 255, 255, 255);
@@ -232,35 +218,30 @@ impl ScreenWriter {
     pub fn draw_three(&mut self, x: usize, y: usize, size: usize) {
         let thickness = size / 6;
     
-        // Top horizontal line
         for dx in 0..size {
             for t in 0..thickness {
                 screenwriter().draw_pixel(x + dx, y + t, 255, 255, 255);
             }
         }
     
-        // Middle horizontal line
         for dx in 0..size {
             for t in 0..thickness {
                 screenwriter().draw_pixel(x + dx, y + size / 2 - thickness / 2 + t, 255, 255, 255);
             }
         }
     
-        // Bottom horizontal line
         for dx in 0..size {
             for t in 0..thickness {
                 screenwriter().draw_pixel(x + dx, y + size - thickness + t + 10, 255, 255, 255);
             }
         }
     
-        // Right vertical line (upper half)
         for dy in 0..size + 15 / 2  {
             for t in 0..thickness {
                 screenwriter().draw_pixel(x + size - thickness + t, y + dy, 255, 255, 255);
             }
         }
     
-        // Right vertical line (lower half)
         for dy in 0..size / 2 {
             for t in 0..thickness {
                 screenwriter().draw_pixel(x + size - thickness + t, y + size / 2 + dy, 255, 255, 255);
@@ -269,11 +250,11 @@ impl ScreenWriter {
     }
 
     pub fn clear_score(&mut self, x: usize, y: usize, size: usize) {
-        let width = size;  // Total pixel width of the digit
-        let height = size; // Total pixel height of the digit
+        let width = size;  
+        let height = size; 
         for dx in 0..width {
             for dy in 0..height + 20 {
-                self.draw_pixel(x + dx, y + dy, 0, 0, 0); // Clear with black
+                self.draw_pixel(x + dx, y + dy, 0, 0, 0); 
             }
         }
     }
@@ -288,13 +269,13 @@ impl ScreenWriter {
     pub fn draw_pong_pad(&mut self, x_pos: usize, y_pos: usize, height: usize, width: usize) {
         for y in y_pos..(y_pos + height) {
             for x in x_pos..(x_pos + width) {
-                self.draw_pixel(x, y, 5, 163, 39); // White color for the pad
+                self.draw_pixel(x, y, 5, 163, 39); 
             }
         }
     }
 
     pub fn draw_pong_game(&mut self) {
-        // Define the size of the pads
+        
         let paddle_width = 10;
         let paddle_height = 100;
 
@@ -305,7 +286,7 @@ impl ScreenWriter {
         let paddle_right_x = self.width() - paddle_width - 10;
 
         unsafe {
-            // Only clear and redraw if the positions have changed
+            
             if paddle_left_pos != self.previous_paddle_left_pos {
                 self.clear_pong_pad(paddle_left_x, self.previous_paddle_left_pos, paddle_height, paddle_width);
                 self.draw_pong_pad(paddle_left_x, paddle_left_pos, paddle_height, paddle_width);
@@ -348,19 +329,18 @@ impl ScreenWriter {
         }
     }
 
-
-    pub fn clear_pong_pad(&mut self, x_pos: usize, y_pos: usize, height: usize, width: usize) {
-        for y in y_pos..(y_pos + height) {
-            for x in x_pos..(x_pos + width) {
-                self.draw_pixel(x, y, 0, 0, 0); // Clear with black
+    pub fn clear_ball(&mut self, ball_x: usize, ball_y: usize, ball_size: usize) {
+        for y in ball_y..(ball_y + ball_size) {
+            for x in ball_x..(ball_x + ball_size) {
+                self.draw_pixel(x, y, 0, 0, 0); 
             }
         }
     }
 
-    pub fn clear_ball(&mut self, ball_x: usize, ball_y: usize, ball_size: usize) {
-        for y in ball_y..(ball_y + ball_size) {
-            for x in ball_x..(ball_x + ball_size) {
-                self.draw_pixel(x, y, 0, 0, 0); // Clear with black
+    pub fn clear_pong_pad(&mut self, x_pos: usize, y_pos: usize, height: usize, width: usize) {
+        for y in y_pos..(y_pos + height) {
+            for x in x_pos..(x_pos + width) {
+                self.draw_pixel(x, y, 0, 0, 0); 
             }
         }
     }
